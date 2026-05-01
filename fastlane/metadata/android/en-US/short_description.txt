@@ -1,0 +1,1 @@
+Android companion for jrnl.sh — journal on the go via WebDAV

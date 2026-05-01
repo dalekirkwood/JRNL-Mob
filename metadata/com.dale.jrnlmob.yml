@@ -6,36 +6,6 @@ SourceCode: https://github.com/dalekirkwood/JRNL-Mob
 IssueTracker: https://github.com/dalekirkwood/JRNL-Mob/issues
 
 AutoName: JRNL-Mob
-Summary: Android companion for jrnl.sh — journal on the go via WebDAV
-Description: |
-  <p>JRNL-Mob is an Android companion for <a href="https://jrnl.sh">jrnl</a> —
-  the open-source command-line journaling tool. It gives you mobile access to
-  your existing jrnl journal files through your own WebDAV server.</p>
-
-  <p><b>This is a companion app — you need jrnl and a WebDAV
-  server to use it.</b> If you don't already journal with jrnl on your
-  computer, set it up first at <a href="https://jrnl.sh">jrnl.sh</a>.</p>
-
-  <p><b>How it works</b></p>
-  <p>jrnl stores your journal as plain text files. JRNL-Mob reads and writes
-  those same files, syncing through your WebDAV server (Nextcloud, ownCloud,
-  etc.). Write on your phone during the day, edit on your laptop with jrnl at
-  night — same file, same format.</p>
-
-  <p><b>Features</b></p>
-  <ul>
-  <li>🎭 Mood tracking with emoji</li>
-  <li>📍 Location tagging via GPS</li>
-  <li>🌤️ Automatic weather (Open-Meteo, no API key)</li>
-  <li>#️⃣ @tag syntax — jrnl-compatible</li>
-  <li>🔍 Full-text search</li>
-  <li>🔄 WebDAV sync (Nextcloud, ownCloud, any WebDAV)</li>
-  <li>📄 Plain text format — never locked in</li>
-  <li>🎨 Material 3 design with dark mode</li>
-  <li>🚫 100% free software — GPL-3.0, zero proprietary deps</li>
-  </ul>
-
-  <p>Your journal, your server, your rules.</p>
 
 RepoType: git
 Repo: https://github.com/dalekirkwood/JRNL-Mob
