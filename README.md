@@ -1,39 +1,65 @@
-# JRNL-Mob
+# 📔 JRNL-Mob
 
-A minimalist journaling app for Android with WebDAV sync.
+> jrnl.sh in your pocket.
+
+An Android companion for [jrnl](https://jrnl.sh) — the open-source command-line journaling tool. Write on your phone, sync via WebDAV to your own server, and read or edit the same journal from your terminal with `jrnl`. One journal, everywhere, in plain text.
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
+## How it works
+
+[jrnl](https://jrnl.sh) stores your journal as plain text files. JRNL-Mob reads and writes those same files, syncing through your WebDAV server.
+
+```
+Laptop:   jrnl ↔ ~/journal.txt  ──sync──  📁 Nextcloud / ownCloud
+Phone:    JRNL-Mob ↔ journal.txt  ──sync── 📁 Nextcloud / ownCloud
+```
+
+Write on the bus. Edit on your laptop. Same file, same format.
 
 ## Features
 
-- Write journal entries with mood, weather, and location
-- Entries stored in a simple plain-text `.jrnl` file format
-- Sync entries across devices via WebDAV (Nextcloud, ownCloud, etc.)
-- Completely offline-first: all data stored locally
-- Tag entries with `@tag` syntax
-- Automatic weather lookup via Open-Meteo API
-- Material 3 design with Jetpack Compose
+🎭 Mood tracking with emoji
+📍 GPS location tagging
+🌤️ Automatic weather (Open-Meteo, no API key)
+#️⃣ @tag syntax — compatible with jrnl's tags
+🔍 Full-text search across all entries
+🔄 WebDAV sync to your own server
+📄 Plain text format — never locked in
+🌙 Dark mode
+🔒 Offline-first
+🚫 Zero proprietary dependencies — 100% free software
 
 ## File Format
 
-Entries are stored as a plain text file (`jrnl.txt` by default) in a human-readable format:
+JRNL-Mob uses jrnl's timestamp format with an optional metadata line:
 
 ```
-[2026-05-01 12:30:00 PM] Today was a great day @grateful
+[2025-05-01 12:30:00 PM] Today was a great day @grateful
 ::jrnlmob mood=HAPPY location=New York weather=☀️ 22°C, Clear
 ```
 
-The `::jrnlmob` metadata line stores mood, location, weather, and tags.
+The `::jrnlmob` line stores mood, location, weather, and tags. jrnl treats it as body text and carries on — both tools coexist in the same file without issues.
+
+## Prerequisites
+
+- [jrnl](https://jrnl.sh/en/stable/installation) installed on your computer
+- A WebDAV server (Nextcloud, ownCloud, or any WebDAV host)
+- Your journal file synced to that server
+
+## Tech Stack
+
+Jetpack Compose · Room · Hilt · OkHttp · Kotlin Coroutines · DataStore
 
 ## Building
 
 ```bash
-./gradlew assembleDebug
+git clone https://github.com/dalekirkwood/JRNL-Mob.git
+cd JRNL-Mob
+./gradlew assembleRelease
 ```
 
-### Requirements
-
-- Android SDK 36
-- JDK 17
-- Gradle 9.x (wrapper included)
+JDK 17 · Android SDK 36 · Gradle wrapper included
 
 ## License
 
