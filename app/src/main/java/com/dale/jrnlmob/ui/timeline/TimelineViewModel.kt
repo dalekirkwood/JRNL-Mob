@@ -51,8 +51,17 @@ class TimelineViewModel @Inject constructor(
 
     private fun loadEntries() {
         viewModelScope.launch {
+            var previousCount = 0
             repository.getAllEntries().collect { entries ->
-                _state.update { it.copy(entries = entries, isLoading = false) }
+                val isNewEntry = entries.size > previousCount && previousCount > 0 && !_state.value.isSyncing
+                _state.update {
+                    it.copy(
+                        entries = entries,
+                        isLoading = false,
+                        scrollToTop = it.scrollToTop || isNewEntry
+                    )
+                }
+                previousCount = entries.size
             }
         }
     }
@@ -97,6 +106,7 @@ class TimelineViewModel @Inject constructor(
                     val entities = JrnlFileParser.parse(content)
                     var count = 0
                     entities.forEach { entity ->
+                        android.util.Log.d("TimelineVM", "sync: saving entry title=${entity.title} mood=${entity.mood} location=${entity.location} weather=${entity.weather} tags=${entity.tags}")
                         repository.saveEntry(
                             JournalEntry(
                                 dateTime = entity.dateTime,

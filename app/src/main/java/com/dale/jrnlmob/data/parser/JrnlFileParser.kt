@@ -8,13 +8,15 @@ import java.time.format.DateTimeFormatter
 
 object JrnlFileParser {
 
+    private const val TAG = "JrnlFileParser"
+
     private val timestampPattern = Regex(
         """^\[(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2}(?::\d{2})?)\s*([APap][Mm])?]\s*(.*)"""
     )
     private val metaPattern = Regex("""^::jrnlmob\s+(.+)""")
-    private val kvPattern = Regex("""(\w+)=(.+?)(?=\s+\w+=|$)""")
+    private val kvPattern = Regex("""(\w+)=(.+?)(?=\s+(?:mood|location|weather|tags)=|$)""")
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    private val time24Formatter = DateTimeFormatter.ofPattern("HH:mm")
+    private val time24Formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
     private val time12Formatter = DateTimeFormatter.ofPattern("hh:mm:ss a")
     private val time12NoSecFormatter = DateTimeFormatter.ofPattern("hh:mm a")
     private val exportFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss a")
@@ -51,6 +53,7 @@ object JrnlFileParser {
                 var mood: String? = null
                 var location: String? = null
                 var weather: String? = null
+                var tagsFromMeta: String? = null
 
                 while (i < lines.size) {
                     val nextLine = lines[i]
@@ -63,6 +66,7 @@ object JrnlFileParser {
                                 "mood" -> mood = kv.groupValues[2].trim()
                                 "location" -> location = kv.groupValues[2].trim()
                                 "weather" -> weather = kv.groupValues[2].trim()
+                                "tags" -> tagsFromMeta = kv.groupValues[2].trim()
                             }
                         }
                         i++
@@ -80,8 +84,14 @@ object JrnlFileParser {
 
                 val body = bodyLines.joinToString("\n").trim()
                 val title = firstLine.ifBlank { body.take(80) }
-                val tags = Regex("@\\w+").findAll(body)
+                val bodyTags = Regex("@\\w+").findAll(body)
                     .map { it.value.removePrefix("@") }.toList()
+                val metaTags = tagsFromMeta?.split(",")
+                    ?.map { it.trim() }
+                    ?.filter { it.isNotEmpty() } ?: emptyList()
+                val tags = (metaTags + bodyTags).distinct()
+
+                android.util.Log.d(TAG, "parsed entry: title=$title mood=$mood location=$location weather=$weather tags=$tags")
 
                 entries.add(
                     EntryEntity(
@@ -131,10 +141,15 @@ object JrnlFileParser {
             val dtStr = entry.dateTime
             val datePart = dtStr.take(10)
             val timePart = if (dtStr.length > 11) dtStr.substring(11) else "00:00:00"
-            val ldt = try {
-                LocalDateTime.parse("$datePart $timePart".substring(0, 19),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            val date = try { LocalDate.parse(datePart, dateFormatter) } catch (_: Exception) { null }
+            val time = try {
+                if (timePart.count { it == ':' } >= 2) {
+                    LocalTime.parse(timePart, time24Formatter)
+                } else {
+                    LocalTime.parse("$timePart:00", time24Formatter)
+                }
             } catch (_: Exception) { null }
+            val ldt = if (date != null && time != null) LocalDateTime.of(date, time) else null
 
             val displayTs = ldt?.format(exportFormatter) ?: "$datePart $timePart"
             sb.append("[$displayTs] ${entry.body}")
@@ -143,6 +158,7 @@ object JrnlFileParser {
             entry.mood?.let { metas.add("mood=$it") }
             entry.location?.let { metas.add("location=$it") }
             entry.weather?.let { metas.add("weather=$it") }
+            entry.tags?.takeIf { it.isNotBlank() }?.let { metas.add("tags=$it") }
             if (metas.isNotEmpty()) {
                 sb.append("\n::jrnlmob ${metas.joinToString(" ")}")
             }

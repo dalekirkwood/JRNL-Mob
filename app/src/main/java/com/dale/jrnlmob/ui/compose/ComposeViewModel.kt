@@ -165,8 +165,12 @@ class ComposeViewModel @Inject constructor(
             updatedAt = System.currentTimeMillis()
         )
         repository.saveEntry(entry)
-        _state.update { it.copy(isSaved = true, error = null) }
-        uploadJournal()
+        try {
+            uploadJournal()
+            _state.update { it.copy(isSaved = true, error = null) }
+        } catch (e: Exception) {
+            _state.update { it.copy(isSaved = true, error = "Saved locally; upload failed: ${e.message}") }
+        }
     }
 
     private suspend fun uploadJournal() {
