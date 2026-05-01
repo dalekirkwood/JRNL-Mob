@@ -52,6 +52,7 @@ class DetailViewModel @Inject constructor(
                 } catch (e: Exception) {
                     _state.update { it.copy(syncError = "Deleted locally but sync failed: ${e.message}") }
                 }
+                _state.update { it.copy(isDeleted = false) }
             }
         }
     }
