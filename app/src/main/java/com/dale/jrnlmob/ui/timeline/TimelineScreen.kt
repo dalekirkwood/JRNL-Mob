@@ -1,5 +1,6 @@
 package com.dale.jrnlmob.ui.timeline
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.LocationOn
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
@@ -33,6 +35,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -72,6 +75,12 @@ fun TimelineScreen(
     modifier: Modifier = Modifier
 ) {
     var searchActive by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = searchActive) {
+        searchActive = false
+        onSearchQueryChanged("")
+    }
+
     val listState = rememberLazyListState()
 
     LaunchedEffect(state.scrollToTop) {
@@ -94,7 +103,15 @@ fun TimelineScreen(
                             expanded = false,
                             onExpandedChange = {},
                             placeholder = { Text("Search entries...") },
-                            leadingIcon = { Icon(Icons.Rounded.Search, null) }
+                            leadingIcon = { Icon(Icons.Rounded.Search, null) },
+                            trailingIcon = {
+                                IconButton(onClick = {
+                                    searchActive = false
+                                    onSearchQueryChanged("")
+                                }) {
+                                    Icon(Icons.Rounded.Close, contentDescription = "Close search")
+                                }
+                            }
                         )
                     },
                     expanded = false,
