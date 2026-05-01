@@ -15,7 +15,6 @@ okhttp = "4.12.0"
 core-ktx = "1.15.0"
 material3 = "1.3.0"
 datastore = "1.1.3"
-play-services-location = "21.3.0"
 compile-sdk = "36"
 min-sdk = "26"
 target-sdk = "36"
@@ -50,7 +49,6 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

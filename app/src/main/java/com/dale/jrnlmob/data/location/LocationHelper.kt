@@ -3,7 +3,10 @@ package com.dale.jrnlmob.data.location
 import android.content.Context
 import android.location.Geocoder
 import android.location.Location
-import com.google.android.gms.location.LocationServices
+import android.location.LocationListener
+import android.location.LocationManager
+import android.os.Bundle
+import android.os.Looper
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Locale
@@ -15,29 +18,69 @@ import kotlin.coroutines.resume
 class LocationHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+    @Suppress("DEPRECATION")
     suspend fun getCurrentLocation(): LocationResult {
         return suspendCancellableCoroutine { continuation ->
             try {
-                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                    if (location != null && continuation.isActive) {
-                        val address = reverseGeocode(location)
+                val cached = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+
+                if (cached != null) {
+                    if (continuation.isActive) {
                         continuation.resume(
                             LocationResult.Success(
-                                latitude = location.latitude,
-                                longitude = location.longitude,
-                                address = address
+                                latitude = cached.latitude,
+                                longitude = cached.longitude,
+                                address = reverseGeocode(cached)
                             )
                         )
-                    } else {
+                    }
+                    return@suspendCancellableCoroutine
+                }
+
+                val listener = object : LocationListener {
+                    override fun onLocationChanged(loc: Location) {
+                        locationManager.removeUpdates(this)
                         if (continuation.isActive) {
-                            continuation.resume(LocationResult.Error("Could not get location"))
+                            continuation.resume(
+                                LocationResult.Success(
+                                    latitude = loc.latitude,
+                                    longitude = loc.longitude,
+                                    address = reverseGeocode(loc)
+                                )
+                            )
                         }
                     }
-                }.addOnFailureListener { e ->
+
+                    @Deprecated("Deprecated in Java")
+                    override fun onProviderDisabled(provider: String) {}
+
+                    @Deprecated("Deprecated in Java")
+                    override fun onProviderEnabled(provider: String) {}
+
+                    @Deprecated("Deprecated in Java")
+                    override fun onStatusChanged(provider: String, status: Int, extras: Bundle?) {}
+                }
+
+                continuation.invokeOnCancellation {
+                    locationManager.removeUpdates(listener)
+                }
+
+                try {
+                    locationManager.requestSingleUpdate(
+                        LocationManager.NETWORK_PROVIDER,
+                        listener,
+                        Looper.getMainLooper()
+                    )
+                } catch (e: SecurityException) {
                     if (continuation.isActive) {
-                        continuation.resume(LocationResult.Error(e.message ?: "Location error"))
+                        continuation.resume(LocationResult.Error("Location permission denied"))
+                    }
+                } catch (e: IllegalArgumentException) {
+                    if (continuation.isActive) {
+                        continuation.resume(LocationResult.Error("No location provider available"))
                     }
                 }
             } catch (e: SecurityException) {
@@ -48,10 +91,10 @@ class LocationHelper @Inject constructor(
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun reverseGeocode(location: Location): String {
         return try {
             val geocoder = Geocoder(context, Locale.getDefault())
-            @Suppress("DEPRECATION")
             val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
             if (!addresses.isNullOrEmpty()) {
                 addresses[0].getAddressLine(0)?.takeIf { it.isNotBlank() }

@@ -69,5 +69,4 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.datastore.preferences)
-    implementation(libs.play.services.location)
 }
