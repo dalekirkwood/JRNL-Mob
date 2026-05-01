@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.dale.jrnlmob.app-debug-49:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.dale.jrnlmob.app-main-51:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.dale.jrnlmob.app-debug-49:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.dale.jrnlmob.app-main-51:/mipmap-anydpi-v26/ic_launcher.xml"
+    }
+]

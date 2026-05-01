@@ -1,0 +1,1 @@
+-keep,allowobfuscation,allowshrinking class com.dale.jrnlmob.ui.detail.DetailViewModel

@@ -1,0 +1,6 @@
+com.dale.jrnlmob
+color ic_launcher_background
+drawable ic_launcher_foreground
+mipmap ic_launcher
+string app_name
+style Theme_JrnlMob
