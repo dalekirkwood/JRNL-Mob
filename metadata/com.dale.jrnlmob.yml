@@ -8,16 +8,33 @@ IssueTracker: https://github.com/dalekirkwood/JRNL-Mob/issues
 AutoName: JRNL-Mob
 Summary: Minimalist journal with WebDAV sync
 Description: |
-  A minimalist journaling app for Android that syncs via WebDAV.
+  <p>JRNL-Mob is a clean, distraction-free journal for Android.
+  Write your thoughts, tag your moods, and never worry about
+  vendor lock-in — your journal is a single plain-text file
+  you can read with any text editor.</p>
 
-  * Write entries with mood, weather, and location
-  * Human-readable plain-text .jrnl file format
-  * Sync across devices via WebDAV (Nextcloud, ownCloud, etc.)
-  * Offline-first — all data stored locally first
-  * Tag entries with @tag syntax
-  * Automatic weather via Open-Meteo (no API key needed)
-  * Material 3 design with Jetpack Compose
-  * Zero proprietary dependencies
+  <p><b>Why JRNL-Mob?</b></p>
+  <ul>
+  <li>Your data stays yours — sync it yourself via WebDAV to your own
+      Nextcloud or ownCloud server. No account required, no cloud lock-in</li>
+  <li>Plain text .jrnl format — human-readable and version-control friendly</li>
+  <li>Attach mood, location, and current weather to every entry</li>
+  <li>Works offline — entries save locally first, sync when you're ready</li>
+  <li>100% free software — GPL-3.0, zero proprietary dependencies</li>
+  </ul>
+
+  <p><b>Features</b></p>
+  <ul>
+  <li>🎭 Mood tracking with emoji</li>
+  <li>📍 Location tagging via GPS</li>
+  <li>🌤️ Automatic weather lookup (powered by Open-Meteo, no API key needed)</li>
+  <li>#️⃣ @tag support for categorizing entries</li>
+  <li>🔍 Full-text search across all entries</li>
+  <li>🔄 WebDAV sync (Nextcloud, ownCloud, any WebDAV server)</li>
+  <li>🎨 Material 3 design with dark mode support</li>
+  </ul>
+
+  <p>Your journal, your server, your rules.</p>
 
 RepoType: git
 Repo: https://github.com/dalekirkwood/JRNL-Mob
