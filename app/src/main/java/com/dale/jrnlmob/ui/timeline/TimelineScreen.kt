@@ -19,7 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -81,7 +82,9 @@ fun TimelineScreen(
         onSearchQueryChanged("")
     }
 
-    val listState = rememberLazyListState()
+    val listState = rememberSaveable(saver = LazyListState.Saver) {
+        LazyListState(0, 0)
+    }
 
     LaunchedEffect(state.scrollToTop) {
         if (state.scrollToTop) {

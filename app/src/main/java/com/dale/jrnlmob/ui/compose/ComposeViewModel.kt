@@ -137,12 +137,9 @@ class ComposeViewModel @Inject constructor(
 
                 var dateTime = now
                 if (_state.value.isEditing && _state.value.editEntryId != null) {
-                    repository.getEntryById(_state.value.editEntryId!!).collect { existing ->
-                        if (existing != null) {
-                            dateTime = existing.dateTime
-                        }
-                        saveEntry(dateTime, title, currentBody, tags)
-                    }
+                    val existing = repository.getEntryById(_state.value.editEntryId!!).first()
+                    if (existing != null) dateTime = existing.dateTime
+                    saveEntry(dateTime, title, currentBody, tags)
                 } else {
                     saveEntry(now, title, currentBody, tags)
                 }

@@ -51,17 +51,13 @@ class TimelineViewModel @Inject constructor(
 
     private fun loadEntries() {
         viewModelScope.launch {
-            var previousCount = 0
             repository.getAllEntries().collect { entries ->
-                val isNewEntry = entries.size > previousCount && previousCount > 0 && !_state.value.isSyncing
                 _state.update {
                     it.copy(
                         entries = entries,
-                        isLoading = false,
-                        scrollToTop = it.scrollToTop || isNewEntry
+                        isLoading = false
                     )
                 }
-                previousCount = entries.size
             }
         }
     }
