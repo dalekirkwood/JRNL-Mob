@@ -27,6 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
@@ -34,6 +37,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,9 +59,19 @@ fun DetailScreen(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     val entry = state.entry
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(state.syncError) {
+        state.syncError?.let { snackbarHostState.showSnackbar(it) }
+    }
 
     Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                Snackbar(snackbarData = data)
+            }
+        },
         topBar = {
             TopAppBar(
                 title = { Text("") },
