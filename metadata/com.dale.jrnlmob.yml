@@ -1,0 +1,39 @@
+Categories:
+  - Writing
+License: GPL-3.0-only
+AuthorName: Dale Kirkwood
+SourceCode: https://github.com/dalekirkwood/JRNL-Mob
+IssueTracker: https://github.com/dalekirkwood/JRNL-Mob/issues
+
+AutoName: JRNL-Mob
+Summary: Minimalist journal with WebDAV sync
+Description: |
+  A minimalist journaling app for Android that syncs via WebDAV.
+
+  * Write entries with mood, weather, and location
+  * Human-readable plain-text .jrnl file format
+  * Sync across devices via WebDAV (Nextcloud, ownCloud, etc.)
+  * Offline-first — all data stored locally first
+  * Tag entries with @tag syntax
+  * Automatic weather via Open-Meteo (no API key needed)
+  * Material 3 design with Jetpack Compose
+  * Zero proprietary dependencies
+
+RepoType: git
+Repo: https://github.com/dalekirkwood/JRNL-Mob
+
+Builds:
+  - versionName: '0.1.0'
+    versionCode: 1
+    commit: cdbc3dd1441a87b9d8d69676ce36fb15c5a21bb6
+    sudo:
+      - apt-get update
+      - apt-get install -y openjdk-17-jdk-headless
+      - update-alternatives --auto java
+    gradle:
+      - assembleRelease
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 0.1.0
+CurrentVersionCode: 1
