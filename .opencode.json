@@ -1,0 +1,18 @@
+{
+  "mcp": {
+    "agent-manager": {
+      "type": "local",
+      "command": [
+        "bun",
+        "run",
+        "/home/nufy/.config/agent-manager/mcp/task-control.ts"
+      ],
+      "environment": {
+        "AM_URL": "http://localhost:3013",
+        "AM_TASK_ID": "X4lpryRB6fnQOdl6c9XJi",
+        "AM_AGENT_ID": "_bd6gkaKqknFLMyx9xC2e"
+      },
+      "enabled": true
+    }
+  }
+}
