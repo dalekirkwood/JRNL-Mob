@@ -112,6 +112,8 @@ fun NavGraph(
                 onJournalPathChanged = settingsViewModel::updateJournalPath,
                 onAutoSyncChanged = settingsViewModel::updateAutoSync,
                 onTemperatureUnitChanged = settingsViewModel::updateTemperatureUnit,
+                onThemeModeChanged = settingsViewModel::updateThemeMode,
+                onDarkFlavorChanged = settingsViewModel::updateDarkFlavor,
                 onSave = { settingsViewModel.save() },
                 onTestConnection = { settingsViewModel.testConnection() },
                 onBack = {

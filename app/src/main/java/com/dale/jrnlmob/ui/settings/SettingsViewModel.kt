@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dale.jrnlmob.data.preferences.AppPreferences
 import com.dale.jrnlmob.data.preferences.SyncSettings
+import com.dale.jrnlmob.ui.theme.DarkFlavor
+import com.dale.jrnlmob.ui.theme.ThemeMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +25,8 @@ data class SettingsState(
     val journalPath: String = "jrnl.txt",
     val autoSync: Boolean = false,
     val temperatureUnit: String = "celsius",
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val darkFlavor: DarkFlavor = DarkFlavor.MOCHA,
     val isTesting: Boolean = false,
     val testResult: String? = null,
     val isSaved: Boolean = false
@@ -46,7 +50,9 @@ class SettingsViewModel @Inject constructor(
                         password = settings.password,
                         journalPath = settings.journalFilePath,
                         autoSync = settings.autoSync,
-                        temperatureUnit = settings.temperatureUnit
+                        temperatureUnit = settings.temperatureUnit,
+                        themeMode = settings.themeMode,
+                        darkFlavor = settings.darkFlavor
                     )
                 }
             }
@@ -59,6 +65,8 @@ class SettingsViewModel @Inject constructor(
     fun updateJournalPath(path: String) = _state.update { it.copy(journalPath = path, isSaved = false) }
     fun updateAutoSync(enabled: Boolean) = _state.update { it.copy(autoSync = enabled, isSaved = false) }
     fun updateTemperatureUnit(unit: String) = _state.update { it.copy(temperatureUnit = unit, isSaved = false) }
+    fun updateThemeMode(mode: ThemeMode) = _state.update { it.copy(themeMode = mode, isSaved = false) }
+    fun updateDarkFlavor(flavor: DarkFlavor) = _state.update { it.copy(darkFlavor = flavor, isSaved = false) }
 
     fun save() {
         viewModelScope.launch {
@@ -69,7 +77,9 @@ class SettingsViewModel @Inject constructor(
                     password = _state.value.password,
                     journalFilePath = _state.value.journalPath,
                     autoSync = _state.value.autoSync,
-                    temperatureUnit = _state.value.temperatureUnit
+                    temperatureUnit = _state.value.temperatureUnit,
+                    themeMode = _state.value.themeMode,
+                    darkFlavor = _state.value.darkFlavor
                 )
             )
             _state.update { it.copy(isSaved = true) }
