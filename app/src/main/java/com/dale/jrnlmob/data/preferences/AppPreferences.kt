@@ -7,6 +7,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.dale.jrnlmob.ui.theme.DarkFlavor
+import com.dale.jrnlmob.ui.theme.ThemeMode
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,7 +23,9 @@ data class SyncSettings(
     val password: String = "",
     val journalFilePath: String = "jrnl.txt",
     val autoSync: Boolean = false,
-    val temperatureUnit: String = "celsius"
+    val temperatureUnit: String = "celsius",
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val darkFlavor: DarkFlavor = DarkFlavor.MOCHA
 )
 
 @Singleton
@@ -35,6 +39,8 @@ class AppPreferences @Inject constructor(
         val JOURNAL_PATH = stringPreferencesKey("journal_path")
         val AUTO_SYNC = booleanPreferencesKey("auto_sync")
         val TEMP_UNIT = stringPreferencesKey("temp_unit")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
+        val DARK_FLAVOR = stringPreferencesKey("dark_flavor")
     }
 
     val syncSettings: Flow<SyncSettings> = context.dataStore.data.map { prefs ->
@@ -44,9 +50,16 @@ class AppPreferences @Inject constructor(
             password = prefs[Keys.PASSWORD] ?: "",
             journalFilePath = prefs[Keys.JOURNAL_PATH] ?: "jrnl.txt",
             autoSync = prefs[Keys.AUTO_SYNC] ?: false,
-            temperatureUnit = prefs[Keys.TEMP_UNIT] ?: "celsius"
+            temperatureUnit = prefs[Keys.TEMP_UNIT] ?: "celsius",
+            themeMode = runCatching { ThemeMode.valueOf(prefs[Keys.THEME_MODE] ?: "SYSTEM") }
+                .getOrDefault(ThemeMode.SYSTEM),
+            darkFlavor = runCatching { DarkFlavor.valueOf(prefs[Keys.DARK_FLAVOR] ?: "MOCHA") }
+                .getOrDefault(DarkFlavor.MOCHA)
         )
     }
+
+    val themeMode: Flow<ThemeMode> = syncSettings.map { it.themeMode }
+    val darkFlavor: Flow<DarkFlavor> = syncSettings.map { it.darkFlavor }
 
     suspend fun updateWebdavUrl(url: String) {
         context.dataStore.edit { it[Keys.WEBDAV_URL] = url }
@@ -72,6 +85,14 @@ class AppPreferences @Inject constructor(
         context.dataStore.edit { it[Keys.TEMP_UNIT] = unit }
     }
 
+    suspend fun updateThemeMode(mode: ThemeMode) {
+        context.dataStore.edit { it[Keys.THEME_MODE] = mode.name }
+    }
+
+    suspend fun updateDarkFlavor(flavor: DarkFlavor) {
+        context.dataStore.edit { it[Keys.DARK_FLAVOR] = flavor.name }
+    }
+
     suspend fun saveAll(settings: SyncSettings) {
         context.dataStore.edit {
             it[Keys.WEBDAV_URL] = settings.webdavUrl
@@ -80,6 +101,8 @@ class AppPreferences @Inject constructor(
             it[Keys.JOURNAL_PATH] = settings.journalFilePath
             it[Keys.AUTO_SYNC] = settings.autoSync
             it[Keys.TEMP_UNIT] = settings.temperatureUnit
+            it[Keys.THEME_MODE] = settings.themeMode.name
+            it[Keys.DARK_FLAVOR] = settings.darkFlavor.name
         }
     }
 }

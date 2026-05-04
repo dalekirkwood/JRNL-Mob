@@ -6,24 +6,38 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.dale.jrnlmob.data.preferences.AppPreferences
 import com.dale.jrnlmob.ui.compose.ComposeViewModel
 import com.dale.jrnlmob.ui.detail.DetailViewModel
 import com.dale.jrnlmob.ui.navigation.NavGraph
 import com.dale.jrnlmob.ui.settings.SettingsViewModel
+import com.dale.jrnlmob.ui.theme.DarkFlavor
 import com.dale.jrnlmob.ui.theme.JrnlMobTheme
+import com.dale.jrnlmob.ui.theme.ThemeMode
 import com.dale.jrnlmob.ui.timeline.TimelineViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var preferences: AppPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            JrnlMobTheme {
+            val themeMode by preferences.themeMode
+                .collectAsStateWithLifecycle(initialValue = ThemeMode.SYSTEM)
+            val darkFlavor by preferences.darkFlavor
+                .collectAsStateWithLifecycle(initialValue = DarkFlavor.MOCHA)
+
+            JrnlMobTheme(themeMode = themeMode, darkFlavor = darkFlavor) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
                     val timelineViewModel: TimelineViewModel = hiltViewModel()
